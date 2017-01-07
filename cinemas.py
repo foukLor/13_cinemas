@@ -4,7 +4,8 @@ import random
 
 AFISHA_URL = "http://www.afisha.ru/msk/schedule_cinema/"
 KINOPOISK_URL = "https://www.kinopoisk.ru/index.php"
-TIMEOUT = 10
+CONNECTION_TIMEOUT = 0.0001
+READ_TIMEOUT = 10
 
 def fetch_afisha_page():
     return requests.get(AFISHA_URL).content
@@ -18,6 +19,7 @@ def parse_afisha_list(raw_html):
         title = movie_div.find('h3', {'class': 'usetags'}).text
         count_cinemas = len(movie_div.find_all("td",
                                 attrs={"class": "b-td-item"}))
+        print(title)
         rating, count_ratings = get_movie_raiting(title)
         movies.append({ 'title'          : title,
                         'num_of_cinemas' : count_cinemas,
@@ -36,7 +38,7 @@ def fetch_movie_info(movie_title):
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'\
                             ' Ubuntu Chromium/51.0.2704.79 Chrome/51.0.2704.79 Safari/537.36'
                                             }
-    kinopoisk_page = requests.get(KINOPOISK_URL, params = payload, headers=headers, timeout=TIMEOUT).content
+    kinopoisk_page = requests.get(KINOPOISK_URL, params = payload, headers=headers, timeout=READ_TIMEOUT).content
     return kinopoisk_page
 
 def get_movie_raiting(movie_title):  
